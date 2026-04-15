@@ -1,73 +1,74 @@
-import axios from 'axios'
 
-const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth`,
-  timeout: 15000,
-})
+// import axios from 'axios'
 
-// Attach token automatically
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('access_token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
+// const api = axios.create({
+//   baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth`,
+//   timeout: 15000,
+// })
 
-// Auto-refresh on 401
-api.interceptors.response.use(
-  res => res,
-  async err => {
-    const original = err.config
+// // Attach token automatically
+// api.interceptors.request.use(config => {
+//   const token = localStorage.getItem('access_token')
+//   if (token) config.headers.Authorization = `Bearer ${token}`
+//   return config
+// })
 
-    if (err.response?.status === 401 && !original._retry) {
-      original._retry = true
-      const refresh = localStorage.getItem('refresh_token')
+// // Auto-refresh on 401
+// api.interceptors.response.use(
+//   res => res,
+//   async err => {
+//     const original = err.config
 
-      if (refresh) {
-        try {
-          const res = await axios.post(
-            `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/token/refresh/`,
-            { refresh }
-          )
+//     if (err.response?.status === 401 && !original._retry) {
+//       original._retry = true
+//       const refresh = localStorage.getItem('refresh_token')
 
-          localStorage.setItem('access_token', res.data.access)
-          original.headers.Authorization = `Bearer ${res.data.access}`
-          return api(original)
-        } catch {
-          localStorage.removeItem('access_token')
-          localStorage.removeItem('refresh_token')
-          window.location.href = '/login'
-        }
-      }
-    }
+//       if (refresh) {
+//         try {
+//           const res = await axios.post(
+//             `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/token/refresh/`,
+//             { refresh }
+//           )
 
-    const msg =
-      err.response?.data?.detail ||
-      err.response?.data?.error ||
-      err.message
+//           localStorage.setItem('access_token', res.data.access)
+//           original.headers.Authorization = `Bearer ${res.data.access}`
+//           return api(original)
+//         } catch {
+//           localStorage.removeItem('access_token')
+//           localStorage.removeItem('refresh_token')
+//           window.location.href = '/login'
+//         }
+//       }
+//     }
 
-    return Promise.reject(
-      new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
-    )
-  }
-)
+//     const msg =
+//       err.response?.data?.detail ||
+//       err.response?.data?.error ||
+//       err.message
 
-export const authApi = {
-  register: (username, email, password) =>
-    api.post('/register/', { username, email, password }),
+//     return Promise.reject(
+//       new Error(typeof msg === 'string' ? msg : JSON.stringify(msg))
+//     )
+//   }
+// )
 
-  login: (email, password) =>
-    api.post('/login/', { email, password }),
+// export const authApi = {
+//   register: (username, email, password) =>
+//     api.post('/register/', { username, email, password }),
 
-  googleLogin: (credential) =>
-    api.post('/google/', { credential }),
+//   login: (email, password) =>
+//     api.post('/login/', { email, password }),
 
-  me: () => api.get('/me/'),
+//   googleLogin: (credential) =>
+//     api.post('/google/', { credential }),
 
-  refresh: (refresh) =>
-    api.post('/token/refresh/', { refresh }),
+//   me: () => api.get('/me/'),
 
-  logout: (refresh) =>
-    api.post('/logout/', { refresh }),
-}
+//   refresh: (refresh) =>
+//     api.post('/token/refresh/', { refresh }),
 
-export default api
+//   logout: (refresh) =>
+//     api.post('/logout/', { refresh }),
+// }
+
+// export default api
