@@ -49,7 +49,7 @@ export default function Navbar() {
             padding:'6px 14px', borderRadius:8, fontSize:13, fontWeight:500,
             color: isActive ? 'var(--text)' : 'var(--text2)',
 background: isActive ? 'rgba(255,255,255,0.07)' : 'transparent',
-border: isActive ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',ho
+border: isActive ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
           })}>
             <Icon size={14} />{label}
           </NavLink>
